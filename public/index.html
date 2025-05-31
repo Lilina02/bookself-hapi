@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookshelf</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Bookshelf</h1>
+
+  
+  <section id="books-section" class="section-container">
+    <h2>Daftar Buku</h2>
+    <ul id="books-list"></ul>
+  </section>
+
+  
+  <section id="add-book-section" class="section-container">
+    <h2>Tambah Buku</h2>
+    <form id="add-book-form">
+      <input type="text" id="title" placeholder="Judul Buku" required />
+      <input type="text" id="author" placeholder="Penulis Buku" required />
+      <button type="submit">Tambah</button>
+    </form>
+  </section>
+
+  <dialog id="update-dialog" class="section-container">
+    <form method="dialog" id="update-form">
+      <h3>Update Buku</h3>
+      <input type="text" id="update-title" required />
+      <input type="text" id="update-author" required />
+      <input type="hidden" id="update-id" />
+      <div>
+        <button type="submit">Simpan</button>
+        <button type="button" id="cancel-update">Batal</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const listEl = document.getElementById('books-list');
+    const form = document.getElementById('add-book-form');
+    const updateDialog = document.getElementById('update-dialog');
+    const updateForm = document.getElementById('update-form');
+    const cancelUpdateBtn = document.getElementById('cancel-update');
+
+    async function fetchBooks() {
+      try {
+        const res = await fetch('/books');
+        const data = await res.json();
+
+        listEl.innerHTML = '';
+        if (data.status === 'success' && data.data.books.length > 0) {
+          data.data.books.forEach(book => {
+            const container = document.createElement('li');
+            container.className = 'book-container';
+
+            const titleAuthor = document.createElement('p');
+            titleAuthor.textContent = `${book.title} - ${book.author}`;
+
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'button-group';
+
+            const updateBtn = document.createElement('button');
+            updateBtn.textContent = 'Update';
+            updateBtn.onclick = () => showUpdateDialog(book);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Hapus';
+            deleteBtn.onclick = async () => {
+              if (confirm(`Hapus buku "${book.title}"?`)) {
+                const res = await fetch(`/books/${book.id}`, {
+                  method: 'DELETE',
+                });
+                if (res.ok) fetchBooks();
+                else alert('Gagal menghapus buku');
+              }
+            };
+
+            btnGroup.appendChild(updateBtn);
+            btnGroup.appendChild(deleteBtn);
+
+            container.appendChild(titleAuthor);
+            container.appendChild(btnGroup);
+
+            listEl.appendChild(container);
+          });
+        } else {
+          listEl.textContent = 'Belum ada buku.';
+        }
+      } catch (error) {
+        listEl.textContent = 'Gagal memuat buku.';
+        console.error(error);
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const author = document.getElementById('author').value.trim();
+
+      if (!title || !author) {
+        alert('Judul dan penulis wajib diisi!');
+        return;
+      }
+
+      try {
+        const res = await fetch('/books', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, author }),
+        });
+
+        if (res.ok) {
+          form.reset();
+          fetchBooks();
+        } else {
+          alert('Gagal menambahkan buku');
+        }
+      } catch (error) {
+        alert('Gagal menambahkan buku');
+        console.error(error);
+      }
+    });
+
+    function showUpdateDialog(book) {
+      document.getElementById('update-title').value = book.title;
+      document.getElementById('update-author').value = book.author;
+      document.getElementById('update-id').value = book.id;
+      updateDialog.showModal();
+    }
+
+    updateForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('update-id').value;
+      const title = document.getElementById('update-title').value.trim();
+      const author = document.getElementById('update-author').value.trim();
+
+      if (!title || !author) {
+        alert('Judul dan penulis tidak boleh kosong');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/books/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, author }),
+        });
+
+        updateDialog.close();
+
+        if (res.ok) {
+          fetchBooks();
+        } else {
+          alert('Gagal mengupdate buku');
+        }
+      } catch (error) {
+        alert('Gagal mengupdate buku');
+        console.error(error);
+      }
+    });
+
+    cancelUpdateBtn.onclick = () => {
+      updateDialog.close();
+    };
+
+    fetchBooks();
+  </script>
+</body>
+</html>

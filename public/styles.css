@@ -1,0 +1,130 @@
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .section-container {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fafafa;
+    }
+
+    #books-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .book-container {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .book-container p {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .button-group button {
+      margin-left: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.2s;
+    }
+
+    .button-group button:hover {
+      background-color: #0056b3;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    form input {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      flex: 1 1 200px;
+      min-width: 0;
+    }
+
+    form button {
+      padding: 8px 16px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    form button:hover {
+      background-color: #1e7e34;
+    }
+
+    dialog form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    dialog form input {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    dialog form div {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    dialog form button {
+      padding: 6px 12px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+    }
+
+    dialog form button[type="submit"] {
+      background-color: #007bff;
+      color: white;
+    }
+
+    dialog form button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    dialog form button#cancel-update {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    dialog form button#cancel-update:hover {
+      background-color: #a71d2a;
+    }
+  
